@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# This file is licensed under the WTFPLv2 [http://wtfpl.net]
 
 import ast
 import sys
