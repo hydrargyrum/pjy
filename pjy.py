@@ -16,14 +16,32 @@ class Placeholder(object):
     def __add__(self, v):
         return Placeholder(lambda x: self(x) + v)
 
+    def __radd__(self, v):
+        return Placeholder(lambda x: v + self(x))
+
     def __sub__(self, v):
         return Placeholder(lambda x: self(x) - v)
+
+    def __rsub__(self, v):
+        return Placeholder(lambda x: v - self(x))
 
     def __mul__(self, v):
         return Placeholder(lambda x: self(x) * v)
 
+    def __rmul__(self, v):
+        return Placeholder(lambda x: v * self(x))
+
     def __truediv__(self, v):
         return Placeholder(lambda x: self(x) / v)
+
+    def __rtruediv__(self, v):
+        return Placeholder(lambda x: v / self(x))
+
+    def __floordiv__(self, v):
+        return Placeholder(lambda x: self(x) // v)
+
+    def __rfloordiv__(self, v):
+        return Placeholder(lambda x: v // self(x))
 
     def __eq__(self, v):
         return Placeholder(lambda x: self(x) == v)
