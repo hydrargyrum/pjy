@@ -2,6 +2,7 @@
 # This file is licensed under the WTFPLv2 [http://wtfpl.net]
 
 import ast
+from argparse import ArgumentParser
 import sys
 import json
 import json.decoder
@@ -175,10 +176,19 @@ def parse_and_inject(src):
 
 
 def main():
-    node = parse_and_inject(sys.argv[1])
+    argparser = ArgumentParser()
+    argparser.add_argument('expr')
+    argparser.add_argument('file')
+    args = argparser.parse_args()
+
+    node = parse_and_inject(args.expr)
     code = compile(node, '<eval>', mode='eval')
 
-    with open(sys.argv[2]) as fd:
+    if args.file == '-':
+        fd = sys.stdin
+    else:
+        fd = open(args.file)
+    with fd:
         data = json.load(fd, cls=Decoder, object_pairs_hook=Dict)
 
     vars = {
