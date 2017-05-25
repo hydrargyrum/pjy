@@ -61,6 +61,16 @@ class Placeholder(object):
     def __abs__(self):
         return Placeholder(lambda x: abs(self(x)))
 
+    # bit opts
+    def __and__(self, v):
+        return Placeholder(lambda x: self(x) & v)
+
+    def __or__(self, v):
+        return Placeholder(lambda x: self(x) | v)
+
+    def __xor__(self, v):
+        return Placeholder(lambda x: self(x) ^ v)
+
     # comparison ops
     def __eq__(self, v):
         return Placeholder(lambda x: self(x) == v)
