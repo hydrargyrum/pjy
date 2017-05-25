@@ -13,6 +13,7 @@ class Placeholder(object):
     def __init__(self, func=None):
         self._func = func or (lambda x: x)
 
+    # math binary ops
     def __add__(self, v):
         return Placeholder(lambda x: self(x) + v)
 
@@ -43,6 +44,24 @@ class Placeholder(object):
     def __rfloordiv__(self, v):
         return Placeholder(lambda x: v // self(x))
 
+    def __mod__(self, v):
+        return Placeholder(lambda x: self(x) % v)
+
+    def __rmod__(self, v):
+        return Placeholder(lambda x: v % self(x))
+
+    # math unary ops
+    def __neg__(self):
+        return Placeholder(lambda x: -self(x))
+
+    def __pos__(self):
+        return Placeholder(lambda x: +self(x))
+
+    # math funcs
+    def __abs__(self):
+        return Placeholder(lambda x: abs(self(x)))
+
+    # comparison ops
     def __eq__(self, v):
         return Placeholder(lambda x: self(x) == v)
 
@@ -61,12 +80,15 @@ class Placeholder(object):
     def __gt__(self, v):
         return Placeholder(lambda x: self(x) > v)
 
+    # object ops
     def __getattr__(self, v):
         return Placeholder(lambda x: getattr(self(x), v))
 
+    # container ops
     def __getitem__(self, v):
         return Placeholder(lambda x: self(x)[v])
 
+    # evaluation!
     def __call__(self, v):
         return self._func(v)
 
