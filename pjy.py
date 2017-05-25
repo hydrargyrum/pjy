@@ -93,6 +93,14 @@ class Placeholder(object):
         return self._func(v)
 
 
+def partial_placeholder(callee, *args):
+    def ret(x):
+        new_args = (arg(x) if isinstance(arg, Placeholder) else arg for arg in args)
+        return callee(*new_args)
+
+    return Placeholder(ret)
+
+
 class Dict(OrderedDict):
     @property
     class c(object):
@@ -168,6 +176,8 @@ def main():
         '_': Placeholder(),
         'list': Array,
         'dict': Dict,
+        'p': partial_placeholder,
+        'partial': partial_placeholder,
     }
 
     res = eval(code, vars)
