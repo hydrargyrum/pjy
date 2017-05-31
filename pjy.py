@@ -1,13 +1,15 @@
 #!/usr/bin/env python3
 # This file is licensed under the WTFPLv2 [http://wtfpl.net]
 
-import ast
 from argparse import ArgumentParser
-import sys
+import ast
+from collections import OrderedDict
+from importlib import import_module
 import json
 import json.decoder
 import json.scanner
-from collections import OrderedDict
+import math
+import sys
 
 
 class Placeholder(object):
@@ -198,6 +200,8 @@ def main():
         'dict': Dict,
         'p': partial_placeholder,
         'partial': partial_placeholder,
+        'imp': import_module,
+        'math': math,
     }
 
     res = eval(code, vars)
