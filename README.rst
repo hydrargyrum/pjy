@@ -1,6 +1,181 @@
-pjy
-===
+pjy - JSON Python processor
+===========================
 
-pjy is a command-line tool to process JSON data and execute queries on it.
-It is a bit like `jq <https://stedolan.github.io/jq/>`_ but with a saner, Python syntax for queries.
+``pjy`` is a command-line tool to process JSON data and execute queries on it.
+It is a bit like `jq <https://stedolan.github.io/jq/>`_ but with a Python syntax for queries.
 
+Usage
++++++
+
+    pjy <EXPR> [FILE]
+
+``pjy`` will read JSON data from ``FILE`` and print the evaluation result of the Python expression ``EXPR``.
+
+If ``FILE`` is missing or is "``-``", pjy will use stdin.
+
+The simplest expression to use, which outputs the input unchanged is "``d``" (for data).
+
+Examples
+++++++++
+
+In ``pjy``, expressions are also called "filters", as in ``jq``.
+
+Just pretty-print
+-----------------
+
+``d`` (short for "data") is the most basic filter, it represents the whole input::
+
+    pjy 'd'
+        {"foo":"bar","baz":[1,2,3]}
+
+Prints::
+
+    {
+      "foo": "bar",
+      "baz": [
+        1,
+        2,
+        3
+      ]
+    }
+
+Select a dict key
+-----------------
+
+The filters are Python expressions, hence we can select a dict key::
+
+    pjy 'd["baz"]'
+        {"foo":"bar","baz":[1,2,3]}
+
+Alternatively, in ``pjy``, dicts keys are also attributes::
+
+    pjy 'd.baz'
+        {"foo":"bar","baz":[1,2,3]}
+
+Both filters will print::
+
+    [
+      1,
+      2,
+      3
+    ]
+
+In case a key has a reserved name, like ``import`` (keyword) or ``keys`` (dict method), simply use the bracket form.
+
+Do a basic operation
+--------------------
+
+It's possible to use everything that a Python expression can contain::
+
+    pjy '[i + 1 for i in d["baz"]]'
+        {"foo":"bar","baz":[1,2,3]}
+
+Prints::
+
+    [
+      2,
+      3,
+      4
+    ]
+
+Lambda-placeholder
+------------------
+
+A special identifier, ``_`` can be used to create lambdas. This identifier will absorb most operations done to it and return a lambda applying them.
+Then, the returned lambda can be applied::
+
+    pjy 'map(_ + 1, d.baz)'
+        {"foo":"bar","baz":[1,2,3]}
+
+Is equivalent to::
+
+    pjy 'map((lambda x: x + 1), d.baz)'
+        {"foo":"bar","baz":[1,2,3]}
+
+Which will print::
+
+    [
+      2,
+      3,
+      4
+    ]
+
+The lambda-placeholder will absorb chained operations::
+
+    pjy 'map((_ + 1) * 2, d.baz)'
+        {"foo":"bar","baz":[1,2,3]}
+
+
+Will result in::
+
+    [
+      4,
+      6,
+      8
+    ]
+
+Pipe-like iteration
+-------------------
+
+The pipe (``|``) can be used to iterate on a list, it accepts a function as right operand::
+
+    pjy 'd.baz | _ + 1'
+        {"foo":"bar","baz":[1,2,3]}
+
+Which prints::
+
+    [
+      2,
+      3,
+      4
+    ]
+
+It also operates on a dict's values, and returns a dict::
+
+    pjy 'd | (lambda x: repr(x))'
+        {"foo":"bar","baz":[1,2,3]}
+
+The values are replaced by the right operand value, the keys are unchanged::
+
+    {
+      "foo": "'bar'",
+      "baz": "[1, 2, 3]"
+    }
+
+Partial placeholder
+-------------------
+
+It's not possible to call a function on a placeholder, for example, ``len(_)`` will not work.
+However, it's possible to use the ``partial`` helper to prepare the function call::
+
+    pjy 'd | partial(len, _)'
+        {"foo":"bar","baz":[1,2,3]}
+
+Prints::
+
+    {
+      "foo": 3,
+      "baz": 3
+    }
+
+``partial`` ressembles the ``functools.partial`` function: it returns a function wrapping the function passed as first argument.
+The returned function will call the original function with the fixed arguments passed.
+The difference is that lambda-placeholders can be passed, and they will be replaced by the wrapper's argument.
+
+``p`` is a short alias for the ``partial`` function which can be used in pjy expressions.
+
+Imports
+-------
+
+It's possible to import modules with the ``imp`` function::
+
+   pjy 'filter(p(imp("re").match, "f.*", _), d.keys())'
+        {"foo":"bar","baz":[1,2,3]}
+
+Will print::
+
+    [
+      "foo"
+    ]
+
+The ``math`` module is already imported and available directly with the ``math`` name.
