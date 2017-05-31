@@ -159,6 +159,7 @@ class Decoder(json.JSONDecoder):
 def encode(obj):
     if hasattr(obj, '__iter__'):
         return list(obj)
+    return repr(obj)
 
 
 class Injector(ast.NodeTransformer):
