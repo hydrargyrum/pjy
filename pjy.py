@@ -178,7 +178,7 @@ def parse_and_inject(src):
 def main():
     argparser = ArgumentParser()
     argparser.add_argument('expr')
-    argparser.add_argument('file')
+    argparser.add_argument('file', nargs='?', default='-')
     args = argparser.parse_args()
 
     node = parse_and_inject(args.expr)
