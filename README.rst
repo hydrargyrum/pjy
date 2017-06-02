@@ -114,6 +114,23 @@ Will result in::
       8
     ]
 
+And::
+
+    ./pjy 'd | _[1:3] * 2'
+        {"foo":"bar","baz":[1,2,3]}
+
+Will return::
+
+    {
+      "foo": "arar",
+      "baz": [
+        2,
+        3,
+        2,
+        3
+      ]
+    }
+
 Pipe-like iteration
 -------------------
 
