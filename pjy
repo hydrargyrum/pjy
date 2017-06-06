@@ -12,46 +12,52 @@ import math
 import sys
 
 
+def ph_call(obj, x):
+    if isinstance(obj, Placeholder):
+        return obj(x)
+    return obj
+
+
 class Placeholder(object):
     def __init__(self, func=None):
         self._func = func or (lambda x: x)
 
     # math binary ops
     def __add__(self, v):
-        return Placeholder(lambda x: self(x) + v)
+        return Placeholder(lambda x: self(x) + ph_call(v, x))
 
     def __radd__(self, v):
-        return Placeholder(lambda x: v + self(x))
+        return Placeholder(lambda x: ph_call(v, x) + self(x))
 
     def __sub__(self, v):
-        return Placeholder(lambda x: self(x) - v)
+        return Placeholder(lambda x: self(x) - ph_call(v, x))
 
     def __rsub__(self, v):
-        return Placeholder(lambda x: v - self(x))
+        return Placeholder(lambda x: ph_call(v, x) - self(x))
 
     def __mul__(self, v):
-        return Placeholder(lambda x: self(x) * v)
+        return Placeholder(lambda x: self(x) * ph_call(v, x))
 
     def __rmul__(self, v):
-        return Placeholder(lambda x: v * self(x))
+        return Placeholder(lambda x: ph_call(v, x) * self(x))
 
     def __truediv__(self, v):
-        return Placeholder(lambda x: self(x) / v)
+        return Placeholder(lambda x: self(x) / ph_call(v, x))
 
     def __rtruediv__(self, v):
-        return Placeholder(lambda x: v / self(x))
+        return Placeholder(lambda x: ph_call(v, x) / self(x))
 
     def __floordiv__(self, v):
-        return Placeholder(lambda x: self(x) // v)
+        return Placeholder(lambda x: self(x) // ph_call(v, x))
 
     def __rfloordiv__(self, v):
-        return Placeholder(lambda x: v // self(x))
+        return Placeholder(lambda x: ph_call(v, x) // self(x))
 
     def __mod__(self, v):
-        return Placeholder(lambda x: self(x) % v)
+        return Placeholder(lambda x: self(x) % ph_call(v, x))
 
     def __rmod__(self, v):
-        return Placeholder(lambda x: v % self(x))
+        return Placeholder(lambda x: ph_call(v, x) % self(x))
 
     # math unary ops
     def __neg__(self):
@@ -66,32 +72,32 @@ class Placeholder(object):
 
     # bit opts
     def __and__(self, v):
-        return Placeholder(lambda x: self(x) & v)
+        return Placeholder(lambda x: self(x) & ph_call(v, x))
 
     def __or__(self, v):
-        return Placeholder(lambda x: self(x) | v)
+        return Placeholder(lambda x: self(x) | ph_call(v, x))
 
     def __xor__(self, v):
-        return Placeholder(lambda x: self(x) ^ v)
+        return Placeholder(lambda x: self(x) ^ ph_call(v, x))
 
     # comparison ops
     def __eq__(self, v):
-        return Placeholder(lambda x: self(x) == v)
+        return Placeholder(lambda x: self(x) == ph_call(v, x))
 
     def __ne__(self, v):
-        return Placeholder(lambda x: self(x) != v)
+        return Placeholder(lambda x: self(x) != ph_call(v, x))
 
     def __le__(self, v):
-        return Placeholder(lambda x: self(x) <= v)
+        return Placeholder(lambda x: self(x) <= ph_call(v, x))
 
     def __lt__(self, v):
-        return Placeholder(lambda x: self(x) < v)
+        return Placeholder(lambda x: self(x) < ph_call(v, x))
 
     def __ge__(self, v):
-        return Placeholder(lambda x: self(x) >= v)
+        return Placeholder(lambda x: self(x) >= ph_call(v, x))
 
     def __gt__(self, v):
-        return Placeholder(lambda x: self(x) > v)
+        return Placeholder(lambda x: self(x) > ph_call(v, x))
 
     # object ops
     def __getattr__(self, v):
