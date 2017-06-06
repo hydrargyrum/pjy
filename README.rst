@@ -211,3 +211,10 @@ For example::
 
 will read 2 files ``before.json`` and ``after.json``, which consist in a list of objects, and ``pjy`` will compare each zipped-pair of objects together.
 Then it will print the list of differing pairs.
+
+
+Version and license
++++++++++++++++++++
+
+``pjy`` is at version 0.6.0. It uses `semantic versioning <http://semver.org/>`_.
+It is licensed under the WTFPLv2, see COPYING.WTFPL for license text.
