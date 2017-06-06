@@ -181,21 +181,25 @@ def parse_and_inject(src):
 def main():
     argparser = ArgumentParser()
     argparser.add_argument('expr')
-    argparser.add_argument('file', nargs='?', default='-')
+    argparser.add_argument('files', nargs='*', default='-')
     args = argparser.parse_args()
 
     node = parse_and_inject(args.expr)
     code = compile(node, '<eval>', mode='eval')
 
-    if args.file == '-':
-        fd = sys.stdin
-    else:
-        fd = open(args.file)
-    with fd:
-        data = json.load(fd, cls=Decoder, object_pairs_hook=Dict)
+    inputs = []
+    for fn in args.files:
+        if fn == '-':
+            fd = sys.stdin
+        else:
+            fd = open(fn)
+        with fd:
+            data = json.load(fd, cls=Decoder, object_pairs_hook=Dict)
+        inputs.append(data)
 
     vars = {
-        'd': data,
+        'd': inputs[0],
+        'inputs': inputs,
         '_': Placeholder(),
         'list': Array,
         'dict': Dict,
