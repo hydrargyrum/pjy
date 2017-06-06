@@ -7,13 +7,15 @@ It is a bit like `jq <https://stedolan.github.io/jq/>`_ but with a Python syntax
 Usage
 +++++
 
-    pjy <EXPR> [FILE]
+    pjy <EXPR> [FILES]
 
-``pjy`` will read JSON data from ``FILE`` and print the evaluation result of the Python expression ``EXPR``.
+``pjy`` will read JSON data from ``FILES`` and print the evaluation result of the Python expression ``EXPR``.
 
-If ``FILE`` is missing or is "``-``", pjy will use stdin.
+If ``FILES`` is missing or is "``-``", pjy will use stdin.
 
 The simplest expression to use, which outputs the input unchanged is "``d``" (for data).
+
+It's possible to use multiple input files.
 
 Examples
 ++++++++
@@ -116,7 +118,7 @@ Will result in::
 
 And::
 
-    ./pjy 'd | _[1:3] * 2'
+    pjy 'map(_[1:3] * 2, d)'
         {"foo":"bar","baz":[1,2,3]}
 
 Will return::
@@ -196,3 +198,16 @@ Will print::
     ]
 
 The ``math`` module is already imported and available directly with the ``math`` name.
+
+Multiple inputs
+---------------
+
+In ``pjy``, an ``inputs`` variable exists, which is a list containing the JSON data of each input file passed on the command line.
+The ``d`` variable is simply an alias to ``inputs[0]``.
+
+For example::
+
+    pjy 'filter(_[0] != _[1], zip(inputs[0], inputs[1]))' before.json after.json
+
+will read 2 files ``before.json`` and ``after.json``, which consist in a list of objects, and ``pjy`` will compare each zipped-pair of objects together.
+Then it will print the list of differing pairs.
