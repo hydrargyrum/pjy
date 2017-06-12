@@ -9,7 +9,9 @@ import json
 import json.decoder
 import json.scanner
 import math
+import os
 import sys
+import traceback
 
 
 def ph_call(obj, x):
@@ -190,7 +192,12 @@ def main():
     argparser.add_argument('files', nargs='*', default='-')
     args = argparser.parse_args()
 
-    node = parse_and_inject(args.expr)
+    try:
+        node = parse_and_inject(args.expr)
+    except SyntaxError as e:
+        traceback.print_exc(limit=0)
+        return os.EX_USAGE
+    ast.fix_missing_locations(node)
     code = compile(node, '<eval>', mode='eval')
 
     inputs = []
@@ -220,4 +227,4 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+    sys.exit(main() or 0)
