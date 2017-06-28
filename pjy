@@ -10,6 +10,7 @@ import json.decoder
 import json.scanner
 import math
 import os
+import signal
 import sys
 import traceback
 
@@ -238,8 +239,14 @@ def main():
         print('%s: %s' % (type(e).__name__, e), file=sys.stderr)
         return os.EX_DATAERR
 
-    print(json.dumps(res, indent=2, default=encode))
+    s = json.dumps(res, indent=2, default=encode)
+    try:
+        print(s)
+        sys.stdout.close()
+    except IOError:
+        pass
 
 
 if __name__ == '__main__':
+    signal.signal(signal.SIGINT, signal.SIG_DFL)
     sys.exit(main() or 0)
