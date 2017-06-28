@@ -230,7 +230,14 @@ def main():
         'math': math,
     }
 
-    res = eval(code, vars)
+    try:
+        res = eval(code, vars)
+    except Exception as e:
+        lines = traceback.format_list(traceback.extract_tb(sys.exc_info()[2])[1:])
+        print(''.join(lines), end='', file=sys.stderr)
+        print('%s: %s' % (type(e).__name__, e), file=sys.stderr)
+        return os.EX_DATAERR
+
     print(json.dumps(res, indent=2, default=encode))
 
 
