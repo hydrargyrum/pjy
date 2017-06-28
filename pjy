@@ -202,12 +202,20 @@ def main():
 
     inputs = []
     for fn in args.files:
-        if fn == '-':
-            fd = sys.stdin
-        else:
-            fd = open(fn)
-        with fd:
-            data = json.load(fd, cls=Decoder, object_pairs_hook=Dict)
+        try:
+            if fn == '-':
+                fn = '<stdin>'
+                fd = sys.stdin
+            else:
+                fd = open(fn)
+            with fd:
+                data = json.load(fd, cls=Decoder, object_pairs_hook=Dict)
+        except json.JSONDecodeError as e:
+            print('Cannot decode JSON data in %s: %s' % (fn, e), file=sys.stderr)
+            return os.EX_DATAERR
+        except IOError as e:
+            print('Cannot read %s: %s' % (fn, e), file=sys.stderr)
+            return os.EX_IOERR
         inputs.append(data)
 
     vars = {
