@@ -230,5 +230,5 @@ If ``pygments`` is installed, ``pjy``'s output will be colorized, but it's entir
 Version and license
 +++++++++++++++++++
 
-``pjy`` is at version 0.8.0. It uses `semantic versioning <http://semver.org/>`_.
+``pjy`` is at version 0.8.1. It uses `semantic versioning <http://semver.org/>`_.
 It is licensed under the WTFPLv2, see COPYING.WTFPL for license text.

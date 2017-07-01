@@ -252,7 +252,10 @@ def main():
 
     s = json.dumps(res, indent=2, default=encode)
     try:
-        print(colorize(s))
+        if sys.stdout.isatty():
+            print(colorize(s))
+        else:
+            print(s)
         sys.stdout.close()
     except IOError:
         pass
