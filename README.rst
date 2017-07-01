@@ -213,6 +213,13 @@ will read 2 files ``before.json`` and ``after.json``, which consist in a list of
 Then it will print the list of differing pairs.
 
 
+Security
+++++++++
+
+``pjy`` by itself does not write files (except stdout/stderr) or sockets, or run external commands.
+However, ``pjy`` runs the given expressions passed as argument, in the Python interpreter, without a sandbox.
+Hence, do NOT pass dangerous or untrusted Python expressions to ``pjy``.
+
 Version and license
 +++++++++++++++++++
 
