@@ -13,7 +13,7 @@ with open(os.path.join(os.path.dirname(__file__), 'README.rst')) as fd:
 
 setup(
     name='pjy',
-    version='0.7.0',
+    version='0.8.0',
 
     description='pjy - command-line JSON processor',
     long_description=README,
@@ -48,4 +48,8 @@ setup(
     data_files=[
         ('share/doc/pjy', ['README.rst']),
     ],
+
+    extras_requires={
+        'pygments': ['pygments'],
+    },
 )

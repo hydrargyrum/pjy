@@ -14,6 +14,17 @@ import signal
 import sys
 import traceback
 
+try:
+    import pygments
+    import pygments.formatters
+    import pygments.lexers.data
+
+    def colorize(s):
+        return pygments.highlight(s, pygments.lexers.data.JsonLexer(), pygments.formatters.TerminalFormatter())
+except ImportError:
+    def colorize(s):
+        return s
+
 
 def ph_call(obj, x):
     if isinstance(obj, Placeholder):
@@ -241,7 +252,7 @@ def main():
 
     s = json.dumps(res, indent=2, default=encode)
     try:
-        print(s)
+        print(colorize(s))
         sys.stdout.close()
     except IOError:
         pass

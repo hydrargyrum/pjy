@@ -220,8 +220,15 @@ Security
 However, ``pjy`` runs the given expressions passed as argument, in the Python interpreter, without a sandbox.
 Hence, do NOT pass dangerous or untrusted Python expressions to ``pjy``.
 
+Dependencies
+++++++++++++
+
+``pjy`` is written in Python 3. Its ``setup.py`` requires ``setuptools``.
+
+If ``pygments`` is installed, ``pjy``'s output will be colorized, but it's entirely optional.
+
 Version and license
 +++++++++++++++++++
 
-``pjy`` is at version 0.7.0. It uses `semantic versioning <http://semver.org/>`_.
+``pjy`` is at version 0.8.0. It uses `semantic versioning <http://semver.org/>`_.
 It is licensed under the WTFPLv2, see COPYING.WTFPL for license text.
