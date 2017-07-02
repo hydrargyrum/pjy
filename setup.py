@@ -13,7 +13,7 @@ with open(os.path.join(os.path.dirname(__file__), 'README.rst')) as fd:
 
 setup(
     name='pjy',
-    version='0.8.1',
+    version='0.9.0-1', # $version
 
     description='pjy - command-line JSON processor',
     long_description=README,

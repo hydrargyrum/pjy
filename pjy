@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # This file is licensed under the WTFPLv2 [http://wtfpl.net]
 
-from argparse import ArgumentParser
+from argparse import ArgumentParser, Action
 import ast
 from collections import OrderedDict
 from importlib import import_module
@@ -198,10 +198,17 @@ def parse_and_inject(src):
     return Injector().visit(node)
 
 
+class VersionAction(Action):
+    def __call__(self, *args, **kwargs):
+        print('0.9.0-1') # $version
+        sys.exit(0)
+
+
 def main():
     argparser = ArgumentParser()
     argparser.add_argument('expr')
     argparser.add_argument('files', nargs='*', default='-')
+    argparser.add_argument('--version', action=VersionAction, nargs=0, help='show pjy version')
     args = argparser.parse_args()
 
     try:
