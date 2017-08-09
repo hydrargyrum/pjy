@@ -10,6 +10,7 @@ import json.decoder
 import json.scanner
 import math
 import os
+import re
 import signal
 import sys
 import traceback
@@ -228,15 +229,20 @@ def main():
         inputs.append(data)
 
     vars = {
+        'data': inputs[0],
         'd': inputs[0],
         'inputs': inputs,
-        '_': Placeholder(),
+
         'list': Array,
         'dict': Dict,
+
+        '_': Placeholder(),
         'p': partial_placeholder,
         'partial': partial_placeholder,
+
         'imp': import_module,
         'math': math,
+        're': re,
     }
 
     try:

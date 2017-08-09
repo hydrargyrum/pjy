@@ -188,7 +188,7 @@ Imports
 
 It's possible to import modules with the ``imp`` function::
 
-   pjy 'filter(p(imp("re").match, "f.*", _), d.keys())'
+   pjy 'filter(p(imp("fnmatch").fnmatch, _, "f*"), d.keys())'
         {"foo":"bar","baz":[1,2,3]}
 
 Will print::
@@ -197,7 +197,7 @@ Will print::
       "foo"
     ]
 
-The ``math`` module is already imported and available directly with the ``math`` name.
+The ``math`` and ``re`` modules are already imported and available directly without having to call ``imp``.
 
 Multiple inputs
 ---------------
