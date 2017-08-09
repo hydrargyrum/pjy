@@ -203,7 +203,7 @@ def main():
     argparser = ArgumentParser()
     argparser.add_argument('expr')
     argparser.add_argument('files', nargs='*', default='-', type=FileType('r'))
-    argparser.add_argument('--version', action='version', version='0.9.0-3') # $version
+    argparser.add_argument('--version', action='version', version='0.9.0-4') # $version
     args = argparser.parse_args()
 
     try:
@@ -216,6 +216,8 @@ def main():
 
     inputs = []
     for fd in args.files:
+        if fd == '-':
+            fd = FileType('r')('-')
         fn = fd.name
         try:
             with fd:
