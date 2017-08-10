@@ -21,7 +21,7 @@ try:
     import pygments.lexers.data
 
     def colorize(s):
-        return pygments.highlight(s, pygments.lexers.data.JsonLexer(), pygments.formatters.TerminalFormatter())
+        return pygments.highlight(s, pygments.lexers.data.JsonLexer(), pygments.formatters.TerminalFormatter()).rstrip()
 except ImportError:
     def colorize(s):
         return s
