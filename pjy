@@ -207,6 +207,28 @@ def parse_and_inject(src):
     return Injector().visit(node)
 
 
+def load_rc():
+    dirs = [os.environ.get('XDG_CONFIG_HOME') or os.path.expanduser('~/.config')]
+    dirs.extend((os.environ.get('XDG_CONFIG_HOME') or '/etc/xdg').split(':'))
+
+    for dir in filter(None, dirs):
+        path = os.path.join(dir, 'pjy', 'lib.py')
+        if os.path.isfile(path):
+            with open(path) as fd:
+                node = ast.parse(fd.read(), path, 'exec')
+                Injector().visit(node)
+                ast.fix_missing_locations(node)
+                code = compile(node, path, 'exec')
+                d = {
+                    'list': Array,
+                    'dict': Dict,
+                    '_': Placeholder(),
+                }
+                exec(code, d)
+                return d
+    return {}
+
+
 def main():
     argparser = ArgumentParser()
     argparser.add_argument('expr', nargs='?', default='d')
@@ -239,7 +261,8 @@ def main():
             return os.EX_IOERR
         inputs.append(data)
 
-    vars = {
+    vars = load_rc()
+    vars.update({
         'data': inputs[0],
         'd': inputs[0],
         'inputs': inputs,
@@ -254,7 +277,7 @@ def main():
         'imp': import_module,
         'math': math,
         're': re,
-    }
+    })
 
     try:
         res = eval(code, vars)
