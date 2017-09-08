@@ -7,7 +7,7 @@ It is a bit like `jq <https://stedolan.github.io/jq/>`_ but with a Python syntax
 Usage
 +++++
 
-    pjy <EXPR> [FILES]
+    pjy [EXPR] [FILES]
 
 ``pjy`` will read JSON data from ``FILES`` and print the evaluation result of the Python expression ``EXPR``.
 

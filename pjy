@@ -201,7 +201,7 @@ def parse_and_inject(src):
 
 def main():
     argparser = ArgumentParser()
-    argparser.add_argument('expr')
+    argparser.add_argument('expr', nargs='?', default='d')
     argparser.add_argument('files', nargs='*', default='-', type=FileType('r'))
     argparser.add_argument('--version', action='version', version='0.9.0') # $version
     argparser.add_argument('--ascii', action='store_const', const=True)
