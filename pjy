@@ -159,6 +159,10 @@ class Dict(OrderedDict):
     def __or__(self, expr):
         return Dict((k, expr(v)) for k, v in self.items())
 
+    def update(self, *args, **kwargs):
+        super(Dict, self).update(*args, **kwargs)
+        return self
+
 
 class Array(list):
     def __or__(self, expr):
