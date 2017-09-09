@@ -184,14 +184,14 @@ def encode(obj):
 
 
 class Injector(ast.NodeTransformer):
-    def call_ListComp(self, node):
+    def visit_ListComp(self, node):
         genex = ast.GeneratorExp(elt=node.elt, generators=node.generators)
         n = ast.Name(id='list', ctx=ast.Load())
-        return ast.Call(func=n, args=[genex])
+        return ast.Call(func=n, args=[genex], keywords=[])
 
-    def call_DictComp(self, node):
-        n = ast.Name(id='dist', ctx=ast.Load())
-        return ast.Call(func=n, args=[node])
+    def visit_DictComp(self, node):
+        n = ast.Name(id='dict', ctx=ast.Load())
+        return ast.Call(func=n, args=[node], keywords=[])
 
 
 def parse_and_inject(src):
