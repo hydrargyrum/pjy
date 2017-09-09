@@ -184,6 +184,14 @@ def encode(obj):
 
 
 class Injector(ast.NodeTransformer):
+    def visit_List(self, node):
+        n = ast.Name(id='list', ctx=ast.Load())
+        return ast.Call(func=n, args=[node], keywords=[])
+
+    def visit_Dict(self, node):
+        n = ast.Name(id='dict', ctx=ast.Load())
+        return ast.Call(func=n, args=[node], keywords=[])
+
     def visit_ListComp(self, node):
         genex = ast.GeneratorExp(elt=node.elt, generators=node.generators)
         n = ast.Name(id='list', ctx=ast.Load())
