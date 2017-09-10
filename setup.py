@@ -43,6 +43,7 @@ setup(
     ],
     keywords='json processor query filter jq',
 
+    python_requires=">=3",
     packages=find_packages(),
     scripts=['pjy'],
     data_files=[
