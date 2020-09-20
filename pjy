@@ -272,6 +272,10 @@ def main():
         '--raw-output', action='store_true',
         help='If result is a string, print directly, not as JSON',
     )
+    argparser.add_argument(
+        '--arg', nargs=2,
+        action='append', dest='user_vars',
+    )
     args = argparser.parse_args()
 
     # indent options
@@ -329,6 +333,8 @@ def main():
         'math': math,
         're': re,
     })
+    for user_var, user_val in (args.user_vars or []):
+        vars[user_var] = user_val
 
     # eval expression
     try:
