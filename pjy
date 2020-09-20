@@ -238,8 +238,25 @@ def main():
     argparser.add_argument('expr', nargs='?', default='d')
     argparser.add_argument('files', nargs='*', default='-', type=FileType('r'))
     argparser.add_argument('--version', action='version', version='0.10.0') # $version
-    argparser.add_argument('--ascii', action='store_const', const=True)
+    argparser.add_argument('--ascii', '--ascii-output', action='store_true')
+    grp = argparser.add_mutually_exclusive_group()
+    grp.add_argument('--tab', help='Use tabs for indentation', action='store_true')
+    grp.add_argument('--indent', type=int, help='Use the number of spaces for indentation')
+    grp.add_argument(
+        '--compact-output', dest='compact', action='store_true',
+        help='No indentation or whitespace between elements, JSON on a single line',
+    )
     args = argparser.parse_args()
+
+    indent = 2
+    separators = None
+    if args.compact:
+        indent = None
+        separators = (',', ':')
+    if args.tab:
+        indent = '\t'
+    elif args.indent is not None:
+        indent = args.indent
 
     try:
         node = parse_and_inject(args.expr)
@@ -291,7 +308,7 @@ def main():
         print('%s: %s' % (type(e).__name__, e), file=sys.stderr)
         return os.EX_DATAERR
 
-    s = json.dumps(res, indent=2, default=encode, ensure_ascii=bool(args.ascii))
+    s = json.dumps(res, indent=indent, separators=separators, default=encode, ensure_ascii=bool(args.ascii))
     try:
         if sys.stdout.isatty():
             print(colorize(s))
