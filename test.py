@@ -12,10 +12,14 @@ pjy_dict = {}
 
 
 class TestCommand(TestCase):
-    def process(self, expr, input, encode=True, decode=True):
+    def process(self, expr, input, encode=True, decode=True, args=None):
+        if not args:
+            args = []
+
         if encode:
             input = dumps(input).encode('utf-8')
-        r = check_output(['./pjy', expr], input=input)
+
+        r = check_output(['./pjy'] + args + [expr], input=input)
         r = r.decode('utf-8')
         if decode:
             r = loads(r)
@@ -63,6 +67,50 @@ class TestCommand(TestCase):
                 r = check_output(['./pjy', 'inputs[0]+inputs[1]', f1.name, f2.name])
                 r = loads(r.decode('utf-8'))
                 self.assertEqual(r, 3)
+
+    def test_option_ascii(self):
+        self.assertEqual(
+            '"é"\n',
+            self.process('d', 'é', decode=False),
+        )
+        self.assertEqual(
+            '"\\u00e9"\n',
+            self.process('d', 'é', args=['--ascii-output'], decode=False),
+        )
+
+    def test_option_raw(self):
+        self.assertEqual(
+            'é\n',
+            self.process('d', 'é', args=['--raw-output'], decode=False),
+        )
+        self.assertEqual(
+            '[]\n',
+            self.process('d', [], args=['--raw-output'], decode=False),
+        )
+
+    def test_option_indentation(self):
+        self.assertEqual(
+            '[\n  1,\n  2\n]\n',
+            self.process('d', [1, 2], decode=False),
+        )
+        self.assertEqual(
+            '[\n    1,\n    2\n]\n',
+            self.process('d', [1, 2], args=['--indent', '4'], decode=False),
+        )
+        self.assertEqual(
+            '[\n\t1,\n\t2\n]\n',
+            self.process('d', [1, 2], args=['--tab'], decode=False),
+        )
+        self.assertEqual(
+            '[1,2]\n',
+            self.process('d', [1, 2], args=['--compact-output'], decode=False),
+        )
+
+    def test_option_arg(self):
+        self.assertEqual(
+            "bar",
+            self.process('foo', None, args=['--arg', 'foo', 'bar', '--arg', 'baz', 'qux']),
+        )
 
 
 class TestInternals(TestCase):
