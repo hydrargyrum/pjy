@@ -275,6 +275,8 @@ def main():
     argparser.add_argument(
         '--arg', nargs=2,
         action='append', dest='user_vars',
+        metavar='VAR',
+        help='Inject a variable with a value in the expression',
     )
     args = argparser.parse_args()
 
