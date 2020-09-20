@@ -1,11 +1,10 @@
-#!/usr/bin/env python3
+#!/usr/bin/env pytest-3
 
 from json import loads, dumps
 import os
 from subprocess import check_output
-import sys
 from tempfile import NamedTemporaryFile
-from unittest import TestCase, main
+from unittest import TestCase
 
 
 pjy_dict = {}
@@ -144,9 +143,6 @@ class TestInternals(TestCase):
             Dict({'hello': 41, 'world': 52}) | (_ + 1))
 
 
-if __name__ == '__main__':
-    os.chdir(os.path.dirname(sys.argv[0]))
-    with open('pjy') as fd:
-        code = compile(fd.read(), 'pjy', 'exec')
-        exec(code, pjy_dict)
-    main()
+with open(os.path.join(os.path.dirname(__file__), 'pjy')) as fd:
+    code = compile(fd.read(), 'pjy', 'exec')
+    exec(code, pjy_dict)
