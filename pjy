@@ -21,7 +21,9 @@ try:
     import pygments.lexers.data
 
     def colorize(s):
-        return pygments.highlight(s, pygments.lexers.data.JsonLexer(), pygments.formatters.TerminalFormatter()).rstrip()
+        lexer = pygments.lexers.data.JsonLexer()
+        formatter = pygments.formatters.TerminalFormatter()
+        return pygments.highlight(s, lexer, formatter).rstrip()
 except ImportError:
     def colorize(s):
         return s
@@ -237,7 +239,7 @@ def main():
     argparser = ArgumentParser()
     argparser.add_argument('expr', nargs='?', default='d')
     argparser.add_argument('files', nargs='*', default='-', type=FileType('r'))
-    argparser.add_argument('--version', action='version', version='0.10.0') # $version
+    argparser.add_argument('--version', action='version', version='0.10.0')  # $version
     argparser.add_argument('--ascii', '--ascii-output', action='store_true')
     grp = argparser.add_mutually_exclusive_group()
     grp.add_argument('--tab', help='Use tabs for indentation', action='store_true')
@@ -260,7 +262,7 @@ def main():
 
     try:
         node = parse_and_inject(args.expr)
-    except SyntaxError as e:
+    except SyntaxError:
         traceback.print_exc(limit=0)
         return os.EX_USAGE
     ast.fix_missing_locations(node)
