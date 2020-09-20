@@ -260,12 +260,17 @@ def main():
     argparser.add_argument('files', nargs='*', default='-', type=FileType('r'))
     argparser.add_argument('--version', action='version', version='0.10.0')  # $version
     argparser.add_argument('--ascii', '--ascii-output', action='store_true')
+    argparser.add_argument('--monochrome-output', action='store_true')
     grp = argparser.add_mutually_exclusive_group()
     grp.add_argument('--tab', help='Use tabs for indentation', action='store_true')
     grp.add_argument('--indent', type=int, help='Use the number of spaces for indentation')
     grp.add_argument(
         '--compact-output', dest='compact', action='store_true',
         help='No indentation or whitespace between elements, JSON on a single line',
+    )
+    argparser.add_argument(
+        '--raw-output', action='store_true',
+        help='If result is a string, print directly, not as JSON',
     )
     args = argparser.parse_args()
 
@@ -335,13 +340,18 @@ def main():
         return os.EX_DATAERR
 
     # output
-    s = json.dumps(
-        res,
-        default=convert_to_jsonable,
-        indent=indent, separators=separators, ensure_ascii=bool(args.ascii),
-    )
+    color = not args.monochrome_output
+    if args.raw_output and isinstance(res, str):
+        color = False
+        s = res
+    else:
+        s = json.dumps(
+            res,
+            default=convert_to_jsonable,
+            indent=indent, separators=separators, ensure_ascii=bool(args.ascii),
+        )
     try:
-        if sys.stdout.isatty():
+        if color and sys.stdout.isatty():
             print(colorize(s))
         else:
             print(s)
