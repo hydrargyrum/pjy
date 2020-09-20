@@ -139,8 +139,10 @@ class TestInternals(TestCase):
 
         self.assertEqual(42, Dict({'hello': 42}).hello)
 
-        self.assertEqual({'hello': 42, 'world': 53},
-            Dict({'hello': 41, 'world': 52}) | (_ + 1))
+        self.assertEqual(
+            {'hello': 42, 'world': 53},
+            Dict({'hello': 41, 'world': 52}) | (_ + 1)
+        )
 
 
 with open(os.path.join(os.path.dirname(__file__), 'pjy')) as fd:
