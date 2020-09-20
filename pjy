@@ -36,6 +36,15 @@ def ph_call(obj, x):
 
 
 class Placeholder(object):
+    """Functor that accumulates operations and applies them at the end
+
+    Example:
+
+        (_ + 1) * 2
+
+    is a callable that will return 4 when applied to 1
+    """
+
     def __init__(self, func=None):
         self._func = func or (lambda x: x)
 
@@ -138,6 +147,7 @@ def partial_placeholder(callee, *args):
 
 
 class Dict(OrderedDict):
+    """Ordered dict whose items are attributes too"""
     @property
     class c(object):
         def __init__(self, d):
@@ -162,6 +172,10 @@ class Dict(OrderedDict):
         return Dict((k, expr(v)) for k, v in self.items())
 
     def update(self, *args, **kwargs):
+        """Like regular dict.update() but returns the dict
+
+        Useful for chaining calls.
+        """
         super(Dict, self).update(*args, **kwargs)
         return self
 
@@ -179,17 +193,21 @@ def parse_array(*args, **kwargs):
 class Decoder(json.JSONDecoder):
     def __init__(self, *args, **kwargs):
         super(Decoder, self).__init__(*args, **kwargs)
+        # can't use a method, the super ctor would overwrite it...
         self.parse_array = parse_array
+        # at least, the "py" scanner uses our configuration
         self.scan_once = json.scanner.py_make_scanner(self)
 
 
-def encode(obj):
+def convert_to_jsonable(obj):
     if hasattr(obj, '__iter__'):
         return list(obj)
     return repr(obj)
 
 
 class Injector(ast.NodeTransformer):
+    # convert list and dict literals to our Array and Dict
+
     def visit_List(self, node):
         n = ast.Name(id='list', ctx=ast.Load())
         return ast.Call(func=n, args=[node], keywords=[])
@@ -236,6 +254,7 @@ def load_rc():
 
 
 def main():
+    # arguments
     argparser = ArgumentParser()
     argparser.add_argument('expr', nargs='?', default='d')
     argparser.add_argument('files', nargs='*', default='-', type=FileType('r'))
@@ -250,6 +269,7 @@ def main():
     )
     args = argparser.parse_args()
 
+    # indent options
     indent = 2
     separators = None
     if args.compact:
@@ -260,6 +280,7 @@ def main():
     elif args.indent is not None:
         indent = args.indent
 
+    # parse expression
     try:
         node = parse_and_inject(args.expr)
     except SyntaxError:
@@ -268,6 +289,7 @@ def main():
     ast.fix_missing_locations(node)
     code = compile(node, '<eval>', mode='eval')
 
+    # parse inputs
     inputs = []
     for fd in args.files:
         if fd == '-':
@@ -284,6 +306,7 @@ def main():
             return os.EX_IOERR
         inputs.append(data)
 
+    # preprare expression runtime
     vars = load_rc()
     vars.update({
         'data': inputs[0],
@@ -302,6 +325,7 @@ def main():
         're': re,
     })
 
+    # eval expression
     try:
         res = eval(code, vars)
     except Exception as e:
@@ -310,7 +334,12 @@ def main():
         print('%s: %s' % (type(e).__name__, e), file=sys.stderr)
         return os.EX_DATAERR
 
-    s = json.dumps(res, indent=indent, separators=separators, default=encode, ensure_ascii=bool(args.ascii))
+    # output
+    s = json.dumps(
+        res,
+        default=convert_to_jsonable,
+        indent=indent, separators=separators, ensure_ascii=bool(args.ascii),
+    )
     try:
         if sys.stdout.isatty():
             print(colorize(s))
