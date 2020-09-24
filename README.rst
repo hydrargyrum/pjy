@@ -4,6 +4,13 @@ pjy - JSON Python processor
 ``pjy`` is a command-line tool to process JSON data and execute queries on it.
 It is a bit like `jq <https://stedolan.github.io/jq/>`_ but with a Python syntax for queries.
 
+Install
++++++++
+
+From `PyPI <https://pypi.org/project/pjy/>`_::
+
+    pip install pjy
+
 Usage
 +++++
 
