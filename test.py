@@ -132,6 +132,7 @@ class TestInternals(TestCase):
         Array = pjy_dict['Array']
 
         self.assertEqual([2, 3, 4], Array([1, 2, 3]) | (_ + 1))
+        self.assertEqual([1, 3], Array([1, 2, 3]) & (_ % 2 == 1))
 
     def test_dict(self):
         _ = pjy_dict['Placeholder']()
@@ -142,6 +143,11 @@ class TestInternals(TestCase):
         self.assertEqual(
             {'hello': 42, 'world': 53},
             Dict({'hello': 41, 'world': 52}) | (_ + 1)
+        )
+
+        self.assertEqual(
+            {'hello': 41},
+            Dict({'hello': 41, 'world': 53}) & (_ < 50)
         )
 
 

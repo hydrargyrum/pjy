@@ -168,6 +168,28 @@ The values are replaced by the right operand value, the keys are unchanged::
       "baz": "[1, 2, 3]"
     }
 
+Ampersand for filtering
+-----------------------
+
+Similar to the pipe, the ampersand (``&``) is used on a list and a function, but its purpose is to filter::
+
+    pjy 'd & (_ % 2 == 0)'
+        [0, 1, 2, 3]
+
+outputs::
+
+    [
+      0,
+      2
+    ]
+
+Which is equivalent to running::
+
+    pjy 'filter(_ % 2 == 0, d)'
+        [0, 1, 2, 3]
+
+Like the pipe, it works on a dict, and the filter is applied on the dict values.
+
 Partial placeholder
 -------------------
 

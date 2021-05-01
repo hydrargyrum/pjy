@@ -171,6 +171,9 @@ class Dict(OrderedDict):
     def __or__(self, expr):
         return Dict((k, expr(v)) for k, v in self.items())
 
+    def __and__(self, expr):
+        return Dict((k, v) for k, v in self.items() if expr(v))
+
     def update(self, *args, **kwargs):
         """Like regular dict.update() but returns the dict
 
@@ -183,6 +186,9 @@ class Dict(OrderedDict):
 class Array(list):
     def __or__(self, expr):
         return Array(expr(i) for i in self)
+
+    def __and__(self, expr):
+        return Array(i for i in self if expr(i))
 
 
 def parse_array(*args, **kwargs):
