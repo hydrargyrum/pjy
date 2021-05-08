@@ -134,6 +134,14 @@ class TestInternals(TestCase):
         self.assertEqual([2, 3, 4], Array([1, 2, 3]) | (_ + 1))
         self.assertEqual([1, 3], Array([1, 2, 3]) & (_ % 2 == 1))
 
+    def test_list_indexerror(self):
+        Array = pjy_dict['Array']
+
+        self.assertEqual(1, Array([1, 2, 3])[0])
+        self.assertEqual(2, Array([1, 2, 3])[1])
+        self.assertEqual(3, Array([1, 2, 3])[2])
+        self.assertEqual(None, Array([1, 2, 3])[3])
+
     def test_dict(self):
         _ = pjy_dict['Placeholder']()
         Dict = pjy_dict['Dict']
@@ -149,6 +157,12 @@ class TestInternals(TestCase):
             {'hello': 41},
             Dict({'hello': 41, 'world': 53}) & (_ < 50)
         )
+
+    def test_dict_keyerror(self):
+        Dict = pjy_dict['Dict']
+
+        self.assertEqual("bar", Dict({"foo": "bar"})["foo"])
+        self.assertEqual(None, Dict({"foo": "bar"})["bar"])
 
 
 with open(os.path.join(os.path.dirname(__file__), 'pjy')) as fd:

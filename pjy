@@ -162,8 +162,11 @@ class Dict(OrderedDict):
         def __setattr__(self, prop, val):
             self._dict[prop] = val
 
+    def __getitem__(self, prop):
+        return super().get(prop)
+
     def __getattr__(self, prop):
-        return self[prop]
+        return super().get(prop)
 
     def __setattr__(self, prop, val):
         self[prop] = val
@@ -189,6 +192,12 @@ class Array(list):
 
     def __and__(self, expr):
         return Array(i for i in self if expr(i))
+
+    def __getitem__(self, index):
+        try:
+            return super().__getitem__(index)
+        except IndexError:
+            return None
 
 
 def parse_array(*args, **kwargs):

@@ -71,6 +71,23 @@ Both filters will print::
 
 In case a key has a reserved name, like ``import`` (keyword) or ``keys`` (dict method), simply use the bracket form.
 
+Non-existent keys
+-----------------
+
+Non-existent keys::
+
+    pjy 'd.baz'
+        {"foo":"bar"}
+
+will return ``None``::
+
+    null
+
+Same for out-of-bounds indices::
+
+    pjy 'd[3]'
+        [1, 2]
+
 Do a basic operation
 --------------------
 
