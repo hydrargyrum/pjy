@@ -5,6 +5,6 @@ from setuptools import setup
 
 
 setup(
-    version='0.11.0',  # $version
+    version='0.12.0',  # $version
     scripts=['pjy'],
 )

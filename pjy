@@ -273,7 +273,7 @@ def main():
     argparser = ArgumentParser()
     argparser.add_argument('expr', nargs='?', default='d')
     argparser.add_argument('files', nargs='*', default='-', type=FileType('r'))
-    argparser.add_argument('--version', action='version', version='0.11.0')  # $version
+    argparser.add_argument('--version', action='version', version='0.12.0')  # $version
     argparser.add_argument('--ascii', '--ascii-output', action='store_true')
     argparser.add_argument('--monochrome-output', action='store_true')
     grp = argparser.add_mutually_exclusive_group()
