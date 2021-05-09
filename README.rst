@@ -258,6 +258,43 @@ For example::
 will read 2 files ``before.json`` and ``after.json``, which consist in a list of objects, and ``pjy`` will compare each zipped-pair of objects together.
 Then it will print the list of differing pairs.
 
+Options
++++++++
+
+Input options
+-------------
+
+	``--null-input``
+
+Don't read any input, act as if the input was only ``null``.
+
+	``--arg VAR VALUE``
+
+Inject a variable named VAR with a VALUE in the expression.
+
+Output options
+--------------
+
+	``--monochrome-output``
+
+Force no colors even if output is a TTY.
+
+	``--ascii-output``
+
+When outputting non-ASCII strings, use ``\uXXXX`` notation instead of directly Unicode characters by default.
+
+	``--tab``
+
+Indent output with tabs instead of 2 spaces.
+
+	``--indent N``
+
+Indent output with N spaces instead of 2 spaces.
+
+	``--compact-output``
+
+Don't indent output and don't add extra whitespace between key/values and list elements.
+
 
 Security
 ++++++++
