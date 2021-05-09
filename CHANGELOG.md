@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - add `&` operator do filter list content
 - accessing a non-existent key in dict returns None instead of KeyError
 - accessing a non-existent index in list returns None instead of IndexError
+- implement `--null-input`
 
 ## [0.11.0] - 2020-09-20
 ### Added

@@ -111,6 +111,16 @@ class TestCommand(TestCase):
             self.process('foo', None, args=['--arg', 'foo', 'bar', '--arg', 'baz', 'qux']),
         )
 
+    def test_option_null_input(self):
+        self.assertEqual(
+            None,
+            self.process('d', None, args=['--null-input']),
+        )
+        self.assertEqual(
+            42,
+            self.process('42', None, args=['--null-input']),
+        )
+
 
 class TestInternals(TestCase):
     def test_placeholder(self):

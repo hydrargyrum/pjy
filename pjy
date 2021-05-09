@@ -284,6 +284,10 @@ def main():
         help='No indentation or whitespace between elements, JSON on a single line',
     )
     argparser.add_argument(
+        '--null-input', action='store_true',
+        help="Don't read any input, act as if the input was just null/None",
+    )
+    argparser.add_argument(
         '--raw-output', action='store_true',
         help='If result is a string, print directly, not as JSON',
     )
@@ -335,6 +339,9 @@ def do_parse_expression(args):
 
 
 def do_inputs(args):
+    if args.null_input:
+        return [None]
+
     inputs = []
 
     for fd in args.files:
