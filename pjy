@@ -295,28 +295,48 @@ def main():
     )
     args = argparser.parse_args()
 
-    # indent options
-    indent = 2
-    separators = None
-    if args.compact:
-        indent = None
-        separators = (',', ':')
-    if args.tab:
-        indent = '\t'
-    elif args.indent is not None:
-        indent = args.indent
+    try:
+        do_parse_indent(args)
 
-    # parse expression
+        code = do_parse_expression(args)
+
+        inputs = do_inputs(args)
+
+        vars = do_prepare_runtime(inputs, args)
+
+        res = do_eval(code, vars, args)
+
+        do_output(res, args)
+    except SystemExit as exc:
+        return exc.args[0]
+
+
+def do_parse_indent(args):
+    args.separators = None
+    if args.compact:
+        args.indent = None
+        args.separators = (',', ':')
+    elif args.tab:
+        args.indent = '\t'
+    elif args.indent is None:
+        args.indent = 2
+
+
+def do_parse_expression(args):
     try:
         node = parse_and_inject(args.expr)
     except SyntaxError:
         traceback.print_exc(limit=0)
-        return os.EX_USAGE
+        sys.exit(os.EX_USAGE)
+
     ast.fix_missing_locations(node)
     code = compile(node, '<eval>', mode='eval')
+    return code
 
-    # parse inputs
+
+def do_inputs(args):
     inputs = []
+
     for fd in args.files:
         if fd == '-':
             fd = FileType('r')('-')
@@ -326,13 +346,17 @@ def main():
                 data = json.load(fd, cls=Decoder, object_pairs_hook=Dict)
         except (UnicodeDecodeError, json.JSONDecodeError) as e:
             print('Cannot decode JSON data in %s: %s' % (fn, e), file=sys.stderr)
-            return os.EX_DATAERR
+            sys.exit(os.EX_DATAERR)
         except IOError as e:
             print('Cannot read %s: %s' % (fn, e), file=sys.stderr)
-            return os.EX_IOERR
+            sys.exit(os.EX_IOERR)
+
         inputs.append(data)
 
-    # preprare expression runtime
+    return inputs
+
+
+def do_prepare_runtime(inputs, args):
     try:
         vars = load_rc()
     except Exception as e:
@@ -358,15 +382,22 @@ def main():
     for user_var, user_val in (args.user_vars or []):
         vars[user_var] = user_val
 
-    # eval expression
+    return vars
+
+
+def do_eval(code, vars, args):
     try:
         res = eval(code, vars)
     except Exception as e:
         lines = traceback.format_list(traceback.extract_tb(sys.exc_info()[2])[1:])
         print(''.join(lines), end='', file=sys.stderr)
         print('%s: %s' % (type(e).__name__, e), file=sys.stderr)
-        return os.EX_DATAERR
+        sys.exit(os.EX_DATAERR)
 
+    return res
+
+
+def do_output(res, args):
     # output
     color = not args.monochrome_output
     if args.raw_output and isinstance(res, str):
@@ -376,7 +407,9 @@ def main():
         s = json.dumps(
             res,
             default=convert_to_jsonable,
-            indent=indent, separators=separators, ensure_ascii=bool(args.ascii),
+            indent=args.indent,
+            separators=args.separators,
+            ensure_ascii=bool(args.ascii),
         )
     try:
         if color and sys.stdout.isatty():
