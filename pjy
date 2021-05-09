@@ -333,7 +333,12 @@ def main():
         inputs.append(data)
 
     # preprare expression runtime
-    vars = load_rc()
+    try:
+        vars = load_rc()
+    except Exception as e:
+        print('Cannot execute config file: %s' % e, file=sys.stderr)
+        vars = {}
+
     vars.update({
         'data': inputs[0],
         'd': inputs[0],
