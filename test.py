@@ -174,6 +174,33 @@ class TestInternals(TestCase):
         self.assertEqual("bar", Dict({"foo": "bar"})["foo"])
         self.assertEqual(None, Dict({"foo": "bar"})["bar"])
 
+    def test_nested_inject(self):
+        def eval_src(src):
+            import ast
+
+            node = parse_and_inject(src)
+            ast.fix_missing_locations(node)
+            return eval(compile(node, "<eval>", mode="eval"), env)
+
+        env = {}
+        parse_and_inject = pjy_dict["parse_and_inject"]
+        env["list"] = Array = pjy_dict["Array"]
+        env["dict"] = Dict = pjy_dict["Dict"]
+
+        self.assertIsInstance(eval_src("[]"), Array)
+        self.assertIsInstance(eval_src("[[]]"), Array)
+        self.assertIsInstance(eval_src("[[]]")[0], Array)
+        self.assertIsInstance(eval_src("[0, []]")[1], Array)
+
+        self.assertIsInstance(eval_src("[[1 for _ in range(1)] for _ in range(1)]")[0], Array)
+
+        self.assertIsInstance(eval_src("{}"), Dict)
+        self.assertIsInstance(eval_src("[{}]"), Array)
+        self.assertIsInstance(eval_src("[{}]")[0], Dict)
+        self.assertIsInstance(eval_src("{0: {}}")[0], Dict)
+
+        self.assertIsInstance(eval_src("{0: {0: 0 for _ in range(0)}}")[0], Dict)
+
 
 with open(os.path.join(os.path.dirname(__file__), 'pjy')) as fd:
     code = compile(fd.read(), 'pjy', 'exec')

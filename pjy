@@ -224,19 +224,27 @@ class Injector(ast.NodeTransformer):
     # convert list and dict literals to our Array and Dict
 
     def visit_List(self, node):
+        self.generic_visit(node)
+
         n = ast.Name(id='list', ctx=ast.Load())
         return ast.Call(func=n, args=[node], keywords=[])
 
     def visit_Dict(self, node):
+        self.generic_visit(node)
+
         n = ast.Name(id='dict', ctx=ast.Load())
         return ast.Call(func=n, args=[node], keywords=[])
 
     def visit_ListComp(self, node):
+        self.generic_visit(node)
+
         genex = ast.GeneratorExp(elt=node.elt, generators=node.generators)
         n = ast.Name(id='list', ctx=ast.Load())
         return ast.Call(func=n, args=[genex], keywords=[])
 
     def visit_DictComp(self, node):
+        self.generic_visit(node)
+
         n = ast.Name(id='dict', ctx=ast.Load())
         return ast.Call(func=n, args=[node], keywords=[])
 
