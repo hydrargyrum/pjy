@@ -1,4 +1,4 @@
-#!/usr/bin/env pytest-3
+#!/usr/bin/env pytest
 
 from json import loads, dumps
 import os
