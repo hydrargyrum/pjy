@@ -414,7 +414,7 @@ def do_eval(code, vars, args):
 
 def do_output(res, args):
     # output
-    color = not args.monochrome_output
+    color = not (args.monochrome_output or os.getenv("NO_COLOR"))
     if args.raw_output and isinstance(res, str):
         color = False
         s = res
