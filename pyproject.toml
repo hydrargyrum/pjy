@@ -64,3 +64,13 @@ include = [
 [tool.hatch.build.targets.wheel.shared-data]
 "README.rst" = "share/doc/pjy/README.rst"
 
+[tool.hatch.envs.default]
+dependencies = [
+    "pytest",
+]
+
+[tool.hatch.envs.default.scripts]
+test = "pytest"
+
+[tool.pytest.ini_options]
+python_files = ["test.py"]

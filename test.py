@@ -1,13 +1,12 @@
 #!/usr/bin/env pytest
 
 from json import loads, dumps
-import os
 from subprocess import check_output
 from tempfile import NamedTemporaryFile
 from unittest import TestCase
+import sys
 
-
-pjy_dict = {}
+import pjy
 
 
 class TestCommand(TestCase):
@@ -18,7 +17,7 @@ class TestCommand(TestCase):
         if encode:
             input = dumps(input).encode('utf-8')
 
-        r = check_output(['./pjy'] + args + [expr], input=input)
+        r = check_output([sys.executable, '-m', 'pjy'] + args + [expr], input=input)
         r = r.decode('utf-8')
         if decode:
             r = loads(r)
@@ -63,7 +62,7 @@ class TestCommand(TestCase):
             with NamedTemporaryFile(buffering=0) as f2:
                 f1.write(b'1')
                 f2.write(b'2')
-                r = check_output(['./pjy', 'inputs[0]+inputs[1]', f1.name, f2.name])
+                r = check_output([sys.executable, '-m', 'pjy', 'inputs[0]+inputs[1]', f1.name, f2.name])
                 r = loads(r.decode('utf-8'))
                 self.assertEqual(r, 3)
 
@@ -124,7 +123,7 @@ class TestCommand(TestCase):
 
 class TestInternals(TestCase):
     def test_placeholder(self):
-        _ = pjy_dict['Placeholder']()
+        _ = pjy.Placeholder()
 
         self.assertEqual(2, _(2))
         self.assertEqual(3, (_ + 1)(2))
@@ -138,14 +137,14 @@ class TestInternals(TestCase):
         self.assertEqual(2, (_ + _)(1))
 
     def test_list(self):
-        _ = pjy_dict['Placeholder']()
-        Array = pjy_dict['Array']
+        _ = pjy.Placeholder()
+        Array = pjy.Array
 
         self.assertEqual([2, 3, 4], Array([1, 2, 3]) | (_ + 1))
         self.assertEqual([1, 3], Array([1, 2, 3]) & (_ % 2 == 1))
 
     def test_list_indexerror(self):
-        Array = pjy_dict['Array']
+        Array = pjy.Array
 
         self.assertEqual(1, Array([1, 2, 3])[0])
         self.assertEqual(2, Array([1, 2, 3])[1])
@@ -153,8 +152,8 @@ class TestInternals(TestCase):
         self.assertEqual(None, Array([1, 2, 3])[3])
 
     def test_dict(self):
-        _ = pjy_dict['Placeholder']()
-        Dict = pjy_dict['Dict']
+        _ = pjy.Placeholder()
+        Dict = pjy.Dict
 
         self.assertEqual(42, Dict({'hello': 42}).hello)
 
@@ -169,7 +168,7 @@ class TestInternals(TestCase):
         )
 
     def test_dict_keyerror(self):
-        Dict = pjy_dict['Dict']
+        Dict = pjy.Dict
 
         self.assertEqual("bar", Dict({"foo": "bar"})["foo"])
         self.assertEqual(None, Dict({"foo": "bar"})["bar"])
@@ -183,9 +182,9 @@ class TestInternals(TestCase):
             return eval(compile(node, "<eval>", mode="eval"), env)
 
         env = {}
-        parse_and_inject = pjy_dict["parse_and_inject"]
-        env["list"] = Array = pjy_dict["Array"]
-        env["dict"] = Dict = pjy_dict["Dict"]
+        parse_and_inject = pjy.parse_and_inject
+        env["list"] = Array = pjy.Array
+        env["dict"] = Dict = pjy.Dict
 
         self.assertIsInstance(eval_src("[]"), Array)
         self.assertIsInstance(eval_src("[[]]"), Array)
@@ -202,6 +201,3 @@ class TestInternals(TestCase):
         self.assertIsInstance(eval_src("{0: {0: 0 for _ in range(0)}}")[0], Dict)
 
 
-with open(os.path.join(os.path.dirname(__file__), 'pjy')) as fd:
-    code = compile(fd.read(), 'pjy', 'exec')
-    exec(code, pjy_dict)
