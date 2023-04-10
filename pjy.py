@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# This file is licensed under the WTFPLv2 [http://wtfpl.net]
+# SPDX-License-Identifier: WTFPL
 
 from argparse import ArgumentParser, FileType
 import ast
@@ -27,6 +27,9 @@ try:
 except ImportError:
     def colorize(s):
         return s
+
+
+__version__ = '0.12.1'  # $version
 
 
 def ph_call(obj, x):
@@ -277,11 +280,13 @@ def load_rc():
 
 
 def main():
+    signal.signal(signal.SIGINT, signal.SIG_DFL)
+
     # arguments
     argparser = ArgumentParser()
     argparser.add_argument('expr', nargs='?', default='d')
     argparser.add_argument('files', nargs='*', default='-', type=FileType('r'))
-    argparser.add_argument('--version', action='version', version='0.12.0')  # $version
+    argparser.add_argument('--version', action='version', version=__version__)
     argparser.add_argument('--ascii', '--ascii-output', action='store_true')
     argparser.add_argument('--monochrome-output', action='store_true')
     grp = argparser.add_mutually_exclusive_group()
@@ -307,20 +312,12 @@ def main():
     )
     args = argparser.parse_args()
 
-    try:
-        do_parse_indent(args)
-
-        code = do_parse_expression(args)
-
-        inputs = do_inputs(args)
-
-        vars = do_prepare_runtime(inputs, args)
-
-        res = do_eval(code, vars, args)
-
-        do_output(res, args)
-    except SystemExit as exc:
-        return exc.args[0]
+    do_parse_indent(args)
+    code = do_parse_expression(args)
+    inputs = do_inputs(args)
+    vars = do_prepare_runtime(inputs, args)
+    res = do_eval(code, vars, args)
+    do_output(res, args)
 
 
 def do_parse_indent(args):
@@ -437,5 +434,4 @@ def do_output(res, args):
 
 
 if __name__ == '__main__':
-    signal.signal(signal.SIGINT, signal.SIG_DFL)
-    sys.exit(main() or 0)
+    main()
