@@ -29,7 +29,7 @@ except ImportError:
         return s
 
 
-__version__ = '0.12.1'  # $version
+__version__ = '0.13.0'  # $version
 
 
 def ph_call(obj, x):

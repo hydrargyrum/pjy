@@ -315,5 +315,5 @@ Version and license
 
 .. $version
 
-``pjy`` is at version 0.12.0, it uses `semantic versioning <http://semver.org/>`_.
+``pjy`` is at version 0.13.0, it uses `semantic versioning <http://semver.org/>`_.
 It is licensed under the WTFPLv2, see COPYING.WTFPL for license text.
