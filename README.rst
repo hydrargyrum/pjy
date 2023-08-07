@@ -277,7 +277,7 @@ Output options
 
 	``--monochrome-output``
 
-Force no colors even if output is a TTY.
+Force no colors even if output is a TTY. Can also set ``NO_COLOR`` environment variable to do the same.
 
 	``--ascii-output``
 
@@ -294,6 +294,14 @@ Indent output with N spaces instead of 2 spaces.
 	``--compact-output``
 
 Don't indent output and don't add extra whitespace between key/values and list elements.
+
+
+Environment variables
++++++++++++++++++++++
+
+``NO_COLOR``: set it to disable colors even if output is a TTY.
+
+``CLICOLOR_FORCE``: set it to enable colors even if output is not a TTY.
 
 
 Security

@@ -29,7 +29,7 @@ except ImportError:
         return s
 
 
-__version__ = '0.13.0'  # $version
+__version__ = '0.14.0'  # $version
 
 
 def ph_call(obj, x):
@@ -279,6 +279,14 @@ def load_rc():
     return {}
 
 
+def has_colors():
+    if "NO_COLOR" in os.environ:
+        return False
+    if "CLICOLOR_FORCE" in os.environ:
+        return True
+    return sys.stdout.isatty()
+
+
 def main():
     signal.signal(signal.SIGINT, signal.SIG_DFL)
 
@@ -411,7 +419,7 @@ def do_eval(code, vars, args):
 
 def do_output(res, args):
     # output
-    color = not (args.monochrome_output or os.getenv("NO_COLOR"))
+    color = not args.monochrome_output and has_colors()
     if args.raw_output and isinstance(res, str):
         color = False
         s = res
@@ -424,7 +432,7 @@ def do_output(res, args):
             ensure_ascii=bool(args.ascii),
         )
     try:
-        if color and sys.stdout.isatty():
+        if color:
             print(colorize(s))
         else:
             print(s)
