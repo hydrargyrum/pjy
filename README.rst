@@ -9,7 +9,11 @@ Install
 
 From `PyPI <https://pypi.org/project/pjy/>`_::
 
-    pip install pjy
+    pipx install pjy
+
+With colors:
+
+    pipx install pjy[pygments]
 
 Usage
 +++++
