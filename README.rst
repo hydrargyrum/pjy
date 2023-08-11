@@ -11,9 +11,9 @@ From `PyPI <https://pypi.org/project/pjy/>`_::
 
     pipx install pjy
 
-With colors:
+With colors::
 
-    pipx install pjy[pygments]
+    pipx install "pjy[pygments]"
 
 Usage
 +++++
