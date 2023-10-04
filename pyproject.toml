@@ -59,10 +59,12 @@ path = "pjy.py"
 [tool.hatch.build.targets.sdist]
 include = [
     "/pjy.py",
+    "/zsh/_pjy",
 ]
 
 [tool.hatch.build.targets.wheel.shared-data]
 "README.rst" = "share/doc/pjy/README.rst"
+"zsh/_pjy" = "share/zsh/site-functions/_pjy"
 
 [tool.hatch.envs.default]
 dependencies = [

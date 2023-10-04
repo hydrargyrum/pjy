@@ -1,0 +1,15 @@
+#compdef pjy
+
+_arguments \
+	{-h,--help}"[Show help]" \
+	"--version[show program's version number and exit]" \
+	"--ascii[Use only ASCII characters]" \
+	"--monochrome-output[don't use color]" \
+	"--tab[Use tabs for indentation]" \
+	"--indent=[Use the number of spaces for indentation]:number" \
+	"--compact-output[No indentation or whitespace between elements, JSON on a single line]" \
+	"--null-input[Don't read any input, act as if the input was just null]" \
+	"--raw-output[If result is a string, print directly, not as JSON]" \
+	"--arg=[Inject a variable with a value in the expression]:name=value" \
+	"1:Python expression:(d)" \
+	"*:Input JSON files:_files"
