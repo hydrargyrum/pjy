@@ -1,0 +1,45 @@
+variables:
+    RUNNER_GENERATE_ARTIFACTS_METADATA: "true"
+    SLSA_PROVENANCE_SCHEMA_VERSION: "v1"
+
+    # Tell pip to cache its downloads in a dir under $CI_PROJECT_DIR, because
+    # paths outside $CI_PROJECT_DIR can't be cached.
+    PIP_CACHE_DIR: "$CI_PROJECT_DIR/.cache/pip"
+    PYTHONDEVMODE: "1"
+
+# Basic cache on the download dir.
+cache:
+    paths:
+        - "$CI_PROJECT_DIR/.cache/pip"
+
+default:
+    image: "python:3"
+
+build:
+    stage: "build"
+    image: "python:3"
+    script:
+        - "pip install build"
+        - "python3 -m build"
+    artifacts:
+        paths:
+            - "dist/*"
+        expire_in: "1 week"
+
+install:
+    stage: "test"
+    script:
+        - "pip install dist/*.whl"
+
+check build:
+    stage: "test"
+    script:
+        - "pip install twine"
+        - "twine check dist/*"
+
+test:
+    stage: "test"
+    image: "python:3"
+    script:
+        - "pip install pytest"
+        - "./test.py"
