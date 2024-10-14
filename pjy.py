@@ -318,6 +318,10 @@ def main():
         metavar='VAR',
         help='Inject a variable with a value in the expression',
     )
+    argparser.add_argument(
+        '--sort-keys', action='store_true',
+        help="Sort object keys for JSON output",
+    )
     args = argparser.parse_args()
 
     do_parse_indent(args)
@@ -430,6 +434,7 @@ def do_output(res, args):
             indent=args.indent,
             separators=args.separators,
             ensure_ascii=bool(args.ascii),
+            sort_keys=bool(args.sort_keys),
         )
     try:
         if color:

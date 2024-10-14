@@ -104,6 +104,15 @@ class TestCommand(TestCase):
             self.process('d', [1, 2], args=['--compact-output'], decode=False),
         )
 
+    def test_option_sort(self):
+        self.assertEqual(
+            '{"bar":2,"foo":1}\n',
+            self.process(
+                'd', {"foo": 1, "bar": 2},
+                args=["--sort-keys", "--compact-output"], decode=False,
+            ),
+        )
+
     def test_option_arg(self):
         self.assertEqual(
             "bar",
