@@ -364,6 +364,8 @@ def do_inputs(args):
     for fd in args.files:
         if fd == '-':
             fd = FileType('r')('-')
+            if fd.isatty():
+                print("warning: pjy is expecting data on stdin", file=sys.stderr)
         fn = fd.name
         try:
             with fd:
