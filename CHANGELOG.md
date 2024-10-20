@@ -4,7 +4,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [0.15.0] - 2025-01-08
+### Added
+- zsh autocompletion
+- add `--sort-keys` to sort the key-value pairs of each object by the key
+- warn when stdin is a TTY
+
+### Fixed
+- NO_COLOR/CLICOLOR_FORCE/FORCE_COLOR specs have changed
+
+## [0.14.0] - 2023-08-07
+### Added
+- honor CLICOLOR_FORCE env variable as well
 
 ## [0.13.0] - 2023-04-11
 ### Added
