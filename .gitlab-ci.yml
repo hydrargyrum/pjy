@@ -42,4 +42,4 @@ test:
     image: "python:3"
     script:
         - "pip install pytest"
-        - "./test.py"
+        - "PYTHONPATH=. pytest"

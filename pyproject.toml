@@ -75,4 +75,4 @@ dependencies = [
 test = "pytest"
 
 [tool.pytest.ini_options]
-python_files = ["test.py"]
+python_files = ["tests/test.py"]
